@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Itinerary</title>
+</head>
+<body>
+	<h1>Generated Itinerary</h1>
+	<ul>
+	{% for activity in activities %}
+		<li>{{ activity }}</li>
+	{% endfor %}
+	</ul>
+</body>
+</html>

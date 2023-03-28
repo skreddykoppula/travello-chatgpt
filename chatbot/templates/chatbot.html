@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Travel Planner Chatbot</title>
+    <script>
+      function showDeparture() {
+        document.getElementById("departure-div").style.display = "block";
+        document.getElementById("destination-div").style.display = "none";
+        document.getElementById("budget-div").style.display = "none";
+        document.getElementById("days-div").style.display = "none";
+      }
+
+      function showDestination() {
+        var departure = document.getElementById("departure").value;
+        document.getElementById("selected-departure").innerHTML = departure;
+        document.getElementById("departure-div").style.display = "none";
+        document.getElementById("destination-div").style.display = "block";
+        document.getElementById("budget-div").style.display = "none";
+        document.getElementById("days-div").style.display = "none";
+      }
+
+      function showBudget() {
+        var destination = document.getElementById("destination").value;
+        document.getElementById("selected-destination").innerHTML = destination;
+        document.getElementById("departure-div").style.display = "none";
+        document.getElementById("destination-div").style.display = "none";
+        document.getElementById("budget-div").style.display = "block";
+        document.getElementById("days-div").style.display = "none";
+      }
+
+      function showDays() {
+        var budget = document.getElementById("budget").value;
+        document.getElementById("selected-budget").innerHTML = budget;
+        document.getElementById("departure-div").style.display = "none";
+        document.getElementById("destination-div").style.display = "none";
+        document.getElementById("budget-div").style.display = "none";
+        document.getElementById("days-div").style.display = "block";
+      }
+    </script>
+    <style>
+      /* Style for the body element */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+      }
+      
+      /* Style for the h1 element */
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      
+      /* Style for the form element */
+      form {
+        width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+      }
+      
+      /* Style for the label element */
+      label {
+        display: inline-block;
+        width: 120px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: #666;
+      }
+      
+      /* Style for the select element */
+      select {
+        display: inline-block;
+        padding: 6px 10px;
+        font-size: 16px;
+        line-height: 1.4;
+        color: #555;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-bottom: 20px;
+      }
+      
+      /* Style for the input[type="submit"] element */
+      input[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      
+      /* Hover style for the input[type="submit"] element */
+      input[type="submit"]:hover {
+        background-color: #0069d9;
+      }
+      button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 10px;
+      }
+      
+      button:hover {
+        background-color: #3e8e41; /* Dark green */
+      }
+      
+      
+      </style>
+  </head>
+  <body>
+    <h1>Travel Planner Chatbot</h1>
+    <form method="post" action="{% url 'generate_itinerary' %}">
+      {% csrf_token %}
+      <div id="departure-div">
+      <label for="departure">Departure city:</label>
+      <select name="departure" id="departure">
+        {% for city in departures %}
+        <option value="{{ forloop.counter }}">{{ city }}</option>
+        {% endfor %}
+      </select>
+      <br>
+      <br>
+        <button type="button" onclick="showDestination()">Next</button>
+      </div>
+
+
+      <div id="destination-div" style="display: none;">
+        {% for city in departures %}
+        <p>{{ forloop.counter }}.{{ city }}</p><br>
+        {% endfor %}
+        <p>Departure city: <span id="selected-departure"></span></p>
+      <label for="destination">Destination city:</label>
+      <select name="destination" id="destination">
+        {% for city in destinations %}
+        <option value="{{ forloop.counter }}">{{ city }}</option>
+        {% endfor %}
+      </select>
+      <br>
+      <button type="button" onclick="showBudget()">Next</button>
+      </div>
+
+      <div id="budget-div" style="display: none;">
+        {% for city in destinations %}
+        <p>{{ forloop.counter }}.{{ city }}</p><br>
+        {% endfor %}
+        {% comment %} <p>Departure city: <span id="selected-departure"></span></p> {% endcomment %}
+        <p>Destination city: <span id="selected-destination"></span></p>
+      <label for="budget">Budget:</label>
+      <select name="budget" id="budget">
+        {% for b in budgets %}
+        <option value="{{ forloop.counter }}">{{ b }}</option>
+        {% endfor %}
+      </select>
+      <br>
+      <button type="button" onclick="showDays()">Next</button>
+      </div>
+
+
+      <div id="days-div" style="display: none;">
+        {% for b in budgets %}
+        <p>{{ forloop.counter }}.{{ b }}</p><br>
+        {% endfor %}
+        {% comment %} <p>Departure city: <span id="selected-departure"></span></p> {% endcomment %}
+        {% comment %} <p>Destination city: <span id="selected-destination"></span></p> {% endcomment %}
+        <p>Budget: <span id="selected-budget"></span></p>
+      <label for="days">Number of days:</label>
+      <select name="days" id="days">
+        {% for d in days %}
+        <option value="{{ forloop.counter }}">{{ d }}</option>
+        {% endfor %}
+      </select>
+      <br>
+      <input type="submit" value="Generate itinerary">
+      {% comment %} <button type="button" onclick="showDays()">Next</button> {% endcomment %}
+      </div>
+
+
+      {% comment %} <input type="submit" value="Generate itinerary"> {% endcomment %}
+    </form>
+    {% comment %} <h1>Generated Itinerary</h1> {% endcomment %}
+	<ul>
+	{% for activity in activities %}
+		<li>{{ activity }}</li>
+	{% endfor %}
+	</ul>
+  </body>
+</html>  
+
+
+{% comment %} <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Travel Planner Chatbot</title>
+    <script>
+      function showDeparture() {
+        document.getElementById("departure-div").style.display = "block";
+        document.getElementById("destination-div").style.display = "none";
+        document.getElementById("budget-div").style.display = "none";
+        document.getElementById("days-div").style.display = "none";
+      }
+
+      function showDestination() {
+        var departure = document.getElementById("departure").value;
+        document.getElementById("selected-departure").innerHTML = departure;
+        document.getElementById("departure-div").style.display = "none";
+        document.getElementById("destination-div").style.display = "block";
+        document.getElementById("budget-div").style.display = "none";
+        document.getElementById("days-div").style.display = "none";
+      }
+
+      function showBudget() {
+        var destination = document.getElementById("destination").value;
+        document.getElementById("selected-destination").innerHTML = destination;
+        document.getElementById("departure-div").style.display = "none";
+        document.getElementById("destination-div").style.display = "none";
+        document.getElementById("budget-div").style.display = "block";
+        document.getElementById("days-div").style.display = "none";
+      }
+
+      function showDays() {
+        var budget = document.getElementById("budget").value;
+        document.getElementById("selected-budget").innerHTML = budget;
+        document.getElementById("departure-div").style.display = "none";
+        document.getElementById("destination-div").style.display = "none";
+        document.getElementById("budget-div").style.display = "none";
+        document.getElementById("days-div").style.display = "block";
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Travel Planner Chatbot</h1>
+    <form method="post" action="{% url 'generate_itinerary' %}">
+      {% csrf_token %}
+      <div id="departure-div">
+        <label for="departure">Departure city:</label>
+        <select name="departure" id="departure">
+          {% for city in departures %}
+          <option value="{{ city }}">{{ city }}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <button type="button" onclick="showDestination()">Next</button>
+      </div>
+      <div id="destination-div" style="display: none;">
+        <p>Departure city: <span id="selected-departure"></span></p>
+        <label for="destination">Destination city:</label>
+        <select name="destination" id="destination">
+          {% for city in destinations %}
+          <option value="{{ city }}">{{ city }}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <button type="button" onclick="showBudget()">Next</button>
+      </div>
+      <div id="budget-div" style="display: none;">
+        <p>Departure city: <span id="selected-departure"></span></p>
+        <p>Destination city: <span id="selected-destination"></span></p>
+        <label for="budget">Budget:</label>
+        <select name="budget" id="budget">
+          {% for b in budgets %}
+          <option value="{{ b }}">{{ b }}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <button type="button" onclick="showDays()">Next</button>
+      </div>
+      <div id="days-div" style="display: none;">
+        <p>Departure city: <span id="selected-departure"></span></p>
+        <p>Destination city: <span id="selected-destination"></span></p>
+        <p>Budget: <span id="selected-budget"></span></p>
+        <label for="days">Budget:</label>
+        <select name="days" id="budget">
+          {% for b in days %}
+          <option value="{{ b }}">{{ b }}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <button type="button" onclick="showDays()">Next</button>
+      </div>
+      <input type="submit" value="Generate itinerary">
+    </form>
+    <h1>Generated Itinerary</h1>
+	<ul>
+	{% for activity in activities %}
+		<li>{{ activity }}</li>
+	{% endfor %}
+	</ul>
+  </body>
+  </body>
+  </html> {% endcomment %}

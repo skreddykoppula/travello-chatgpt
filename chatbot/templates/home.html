@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block content %}
+    <h1>Welcome to our travel website!</h1>
+    <p>Here you can plan your next travel itinerary with the help of our AI-powered chatbot.</p>
+    <p>To get started, click on the button below:</p>
+    <a href="{% url 'chatbot' %}" class="button">Chat with our travel chatbot</a>
+{% endblock %}
